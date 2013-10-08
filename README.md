@@ -36,3 +36,8 @@ own AppID, and upload all four files to your whitelisted directory.
 2. At line 58 of GameActivity, replace "TicTacToe" with your own AppID.
 3. Run the TicTacToe app; you should now be able to connect to your own version
 of the TicTacToe receiver.
+
+You can also find the two apk's one pointing to original cast example ( GameActivity_old.apk ) and another pointing
+to new GWT based receiver app ( GameActivity_new.apk) in the source code, you will need to android devices to be
+able to see the results, you can use emulator too if you dont have an android device.
+
