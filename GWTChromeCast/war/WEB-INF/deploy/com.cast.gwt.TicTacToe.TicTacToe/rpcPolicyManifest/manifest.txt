@@ -1,0 +1,2 @@
+# Module com.cast.gwt.TicTacToe.TicTacToe
+# RPC service class, partial path of RPC policy file
