@@ -16,6 +16,11 @@ import com.google.gwt.json.client.JSONString;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Window;
 
+/**
+ * Tic Tac Toe Gameplay with Chromecast This file exposes cast.TicTacToe as an
+ * object containing a ChannelHandler and capable of receiving and sending
+ * messages to the sender application.
+ */
 public class TicTacToe
 {
 
@@ -30,6 +35,14 @@ public class TicTacToe
 	private String mCurrentPlayer;
 	public ChannelHandler mChannelHandler;
 
+	/**
+	 * Creates a TicTacToe object with an optional board and attaches a
+	 * cast.receiver.ChannelHandler, which receives messages from the channel
+	 * between the sender and receiver.
+	 * 
+	 * @param Board
+	 *          opt_board an optional game board.
+	 */
 	public TicTacToe(Board mBoard)
 	{
 		this.mBoard = mBoard;
@@ -38,6 +51,7 @@ public class TicTacToe
 
 		this.mChannelHandler = ChannelHandler.create("TicTacToeDebug");
 
+		// Adds event listening functions to TicTacToe.prototype.
 		this.mChannelHandler.addEventListener(EventType.MESSAGE(),
 				new EventHandler()
 				{
@@ -55,8 +69,8 @@ public class TicTacToe
 			@Override
 			public void onEvent(Event event)
 			{
-				onChannelOpened();
-			
+				onChannelOpened(event);
+
 			}
 		});
 
@@ -67,20 +81,33 @@ public class TicTacToe
 					@Override
 					public void onEvent(Event event)
 					{
-						
-						
+						onChannelClosed(event);
 					}
 				});
 
 	}
 
-	protected void onChannelOpened()
+	/**
+	 * Channel opened event; checks number of open channels.
+	 * 
+	 * @param event
+	 *          the channel open event.
+	 */
+	protected void onChannelOpened(Event event)
 	{
 		console.log("onChannelOpened. Total number of channels: "
 				+ (this.mChannelHandler.getChannels()).length());
-		
+
 	}
-	private void onChannelClosed()
+
+	/**
+	 * Channel closed event; if all devices are disconnected, closes the
+	 * application.
+	 * 
+	 * @param event
+	 *          event the channel close event.
+	 */
+	private void onChannelClosed(Event event)
 	{
 		console.log("onChannelClosed. Total number of channels: "
 				+ (mChannelHandler.getChannels()).length());
@@ -90,7 +117,6 @@ public class TicTacToe
 			Window.open("", "_parent", "");
 			closeBrowser();
 		}
-	
 
 	}
 
@@ -99,6 +125,13 @@ public class TicTacToe
 		$wnd.close();
 	}-*/;
 
+	/**
+	 * Message received event; determines event message and command, and choose
+	 * function to call based on them.
+	 * 
+	 * @param MessageEvent
+	 *          event the event to be processed.
+	 */
 	public void onMessage(MessageEvent event)
 	{
 		JSONObject message = new JSONObject(event.message());
@@ -134,6 +167,13 @@ public class TicTacToe
 		}
 	}
 
+	/**
+	 * Request event for the board layout: sends the current layout of pieces on
+	 * the board through the channel.
+	 * 
+	 * @param Channel
+	 *          channel the channel the event came from.
+	 */
 	private void onBoardLayoutRequest(Channel channel)
 	{
 		console.log("****onBoardLayoutRequest");
@@ -154,6 +194,15 @@ public class TicTacToe
 
 	}
 
+	/**
+	 * Move event: checks whether a valid move was made and updates the board as
+	 * necessary.
+	 * 
+	 * @param Channel
+	 *          channel the source of the move, which determines the player.
+	 * @param JSONObject
+	 *          message contains the row and column of the move.
+	 */
 	private void onMove(Channel channel, JSONObject message)
 	{
 
@@ -277,6 +326,13 @@ public class TicTacToe
 		channel.send(data);
 	}
 
+	/**
+	 * Player leave event: determines which player left and unregisters that
+	 * player, and ends the game if all players are absent.
+	 * 
+	 * @param Channel
+	 *          channel the channel of the leaving player.
+	 */
 	private void onLeave(Channel channel)
 	{
 		console.log("****OnLeave");
@@ -303,6 +359,15 @@ public class TicTacToe
 
 	}
 
+	/**
+	 * Player joined event: registers a new player who joined the game, or
+	 * prevents player from joining if invalid.
+	 * 
+	 * @param Channel
+	 *          channel the channel the message came from.
+	 * @param JSONObject
+	 *          message the name of the player who just joined.
+	 */
 	private void onJoin(Channel channel, JSONObject message)
 	{
 		console.log("****onJoin: " + message);
@@ -375,6 +440,12 @@ public class TicTacToe
 		this.mPlayer2.getChannel().send(data2);
 	}
 
+	/**
+	 * Broadcasts a message to all of this object's known channels.
+	 * 
+	 * @param JSONObject
+	 *          message the message to broadcast.
+	 */
 	private void broadcast(JSONObject message)
 	{
 		JsArray<Channel> arr = this.mChannelHandler.getChannels();

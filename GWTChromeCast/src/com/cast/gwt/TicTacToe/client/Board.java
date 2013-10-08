@@ -3,8 +3,11 @@ package com.cast.gwt.TicTacToe.client;
 import com.cast.gwt.receiver.client.console;
 import com.google.gwt.canvas.dom.client.Context;
 import com.google.gwt.canvas.dom.client.Context2d;
-import com.google.gwt.user.client.Window;
 
+/*
+ * This class represents a TicTacToe board object, with all needed drawing and
+ * state update functions.
+ */
 public class Board
 {
 	private Context2d mContext;
@@ -16,8 +19,14 @@ public class Board
 	private int pieceMargin = 20;
 	private int X;
 	private int Y;
-	private int cellWidth;;
+	private int cellWidth;
 
+	/**
+	 * Creates an empty board object with no location
+	 * 
+	 * @param {CanvasRenderingContext2D} context the 2D context of the canvas that
+	 *        the board is drawn on.
+	 */
 	public Board(Context context)
 	{
 		this.mContext = (Context2d) context;
@@ -33,11 +42,17 @@ public class Board
 
 	}
 
+	/**
+	 * Calculates board dimensions.
+	 */
 	public void clear()
 	{
 		this.boardCalcDimensions();
 	}
 
+	/**
+	 * Calculates and sets internally the board's width, height, x, and y.
+	 */
 	private void boardCalcDimensions()
 	{
 		if (this.mContext.getCanvas().getWidth() > this.mContext.getCanvas()
@@ -61,6 +76,9 @@ public class Board
 
 	}
 
+	/**
+	 * Draws the hashmark-shaped grid for TicTacToe.
+	 */
 	private void boardDrawGrid()
 	{
 		this.mContext.setFillStyle("#BDBDBD");
@@ -130,7 +148,7 @@ public class Board
 		}
 		this.mBoard[row][col] = STATE.CROSS.value;
 		this.mContext.setLineWidth(8);
-		this.mContext.setStrokeStyle("#FFFF00");
+		this.mContext.setStrokeStyle("#0000FF");
 		this.mContext.beginPath();
 		this.mContext.moveTo(this.X + this.cellWidth * col + this.pieceMargin,
 				this.Y + this.cellWidth * row + this.pieceMargin);
@@ -157,160 +175,222 @@ public class Board
 		return boardDrawNaught((int) row, (int) col);
 	}
 
+	/**
+	 * Determines whether the game is over, whether by winning or draw.
+	 * 
+	 * @return {@link Boolean} true if the game ended via a win or a draw.
+	 */
 	public boolean isGameOver()
 	{
 		return boardIsGameOver();
 	}
 
+	/**
+	 * Determines whether the game is over, whether by winning or draw.
+	 * 
+	 * @return {@link Boolean} true if the game ended via a win or a draw.
+	 */
 	private boolean boardIsGameOver()
-	{ boolean isBoardFull = true;
-  this.printBoard();
-  // Check the rows
-  for (int i = 0; i < this.mBoard.length; i++) {
-    if ((this.mBoard[i][0] != STATE.EMPTY.value) &&
-        (this.mBoard[i][1] == this.mBoard[i][0]) &&
-        (this.mBoard[i][2] == this.mBoard[i][0])) {
-      this.mGameResult = GAME_RESULT.O_WON.value;
-      if (this.mBoard[i][0] == STATE.CROSS.value) {
-        this.mGameResult = GAME_RESULT.X_WON.value;
-      }
-      if (i == 0) {
-        this.mWinningLocation = WINNING_LOCATION.ROW_0.value;
-      } else if (i == 1) {
-        this.mWinningLocation = WINNING_LOCATION.ROW_1.value;
-      } else {
-        this.mWinningLocation = WINNING_LOCATION.ROW_2.value;
-      }
-    }
-    if ((isBoardFull == true) && ((this.mBoard[i][0] == STATE.EMPTY.value) ||
-        (this.mBoard[i][1] == STATE.EMPTY.value) ||
-        (this.mBoard[i][2] == STATE.EMPTY.value))) {
-      isBoardFull = false;
-    }
-  }
-  this.printBoard();
+	{
+		boolean isBoardFull = true;
+		this.printBoard();
+		// Check the rows
+		for (int i = 0; i < this.mBoard.length; i++)
+		{
+			if ((this.mBoard[i][0] != STATE.EMPTY.value)
+					&& (this.mBoard[i][1] == this.mBoard[i][0])
+					&& (this.mBoard[i][2] == this.mBoard[i][0]))
+			{
+				this.mGameResult = GAME_RESULT.O_WON.value;
+				if (this.mBoard[i][0] == STATE.CROSS.value)
+				{
+					this.mGameResult = GAME_RESULT.X_WON.value;
+				}
+				if (i == 0)
+				{
+					this.mWinningLocation = WINNING_LOCATION.ROW_0.value;
+				}
+				else if (i == 1)
+				{
+					this.mWinningLocation = WINNING_LOCATION.ROW_1.value;
+				}
+				else
+				{
+					this.mWinningLocation = WINNING_LOCATION.ROW_2.value;
+				}
+			}
+			if ((isBoardFull == true)
+					&& ((this.mBoard[i][0] == STATE.EMPTY.value)
+							|| (this.mBoard[i][1] == STATE.EMPTY.value) || (this.mBoard[i][2] == STATE.EMPTY.value)))
+			{
+				isBoardFull = false;
+			}
+		}
+		this.printBoard();
 
-  // Check the columns
-  for (int j = 0; j < this.mBoard[0].length; j++) {
-    if ((this.mBoard[0][j] != STATE.EMPTY.value) &&
-        (this.mBoard[1][j] == this.mBoard[0][j]) &&
-        (this.mBoard[2][j] == this.mBoard[0][j])) {
-      this.mGameResult = GAME_RESULT.O_WON.value;
-      if (this.mBoard[0][j] == STATE.CROSS.value) {
-        this.mGameResult = GAME_RESULT.X_WON.value;
-      }
-      if (j == 0) {
-        this.mWinningLocation = WINNING_LOCATION.COLUMN_0.value;
-      } else if (j == 1) {
-        this.mWinningLocation = WINNING_LOCATION.COLUMN_1.value;
-      } else {
-        this.mWinningLocation = WINNING_LOCATION.COLUMN_2.value;
-      }
-      break;
-    }
-  }
-  this.printBoard();
+		// Check the columns
+		for (int j = 0; j < this.mBoard[0].length; j++)
+		{
+			if ((this.mBoard[0][j] != STATE.EMPTY.value)
+					&& (this.mBoard[1][j] == this.mBoard[0][j])
+					&& (this.mBoard[2][j] == this.mBoard[0][j]))
+			{
+				this.mGameResult = GAME_RESULT.O_WON.value;
+				if (this.mBoard[0][j] == STATE.CROSS.value)
+				{
+					this.mGameResult = GAME_RESULT.X_WON.value;
+				}
+				if (j == 0)
+				{
+					this.mWinningLocation = WINNING_LOCATION.COLUMN_0.value;
+				}
+				else if (j == 1)
+				{
+					this.mWinningLocation = WINNING_LOCATION.COLUMN_1.value;
+				}
+				else
+				{
+					this.mWinningLocation = WINNING_LOCATION.COLUMN_2.value;
+				}
+				break;
+			}
+		}
+		this.printBoard();
 
-  // Check diagonals
-  if ((this.mBoard[0][0] != STATE.EMPTY.value) &&
-      (this.mBoard[1][1] == this.mBoard[0][0]) &&
-      (this.mBoard[2][2] == this.mBoard[0][0])) {
-    this.mWinningLocation = WINNING_LOCATION.DIAGONAL_TOPLEFT.value;
-    this.mGameResult = GAME_RESULT.O_WON.value;
-    if (this.mBoard[0][0] == STATE.CROSS.value) {
-      this.mGameResult = GAME_RESULT.X_WON.value;
-    }
-  } else if ((this.mBoard[0][2] != STATE.EMPTY.value) &&
-      (this.mBoard[1][1] == this.mBoard[0][2]) &&
-      (this.mBoard[2][0] == this.mBoard[0][2])) {
-    this.mWinningLocation = WINNING_LOCATION.DIAGONAL_BOTTOMLEFT.value;
-    this.mGameResult = GAME_RESULT.O_WON.value;
-    if (this.mBoard[0][2] == STATE.CROSS.value) {
-      this.mGameResult = GAME_RESULT.X_WON.value;
-    }
-  }
+		// Check diagonals
+		if ((this.mBoard[0][0] != STATE.EMPTY.value)
+				&& (this.mBoard[1][1] == this.mBoard[0][0])
+				&& (this.mBoard[2][2] == this.mBoard[0][0]))
+		{
+			this.mWinningLocation = WINNING_LOCATION.DIAGONAL_TOPLEFT.value;
+			this.mGameResult = GAME_RESULT.O_WON.value;
+			if (this.mBoard[0][0] == STATE.CROSS.value)
+			{
+				this.mGameResult = GAME_RESULT.X_WON.value;
+			}
+		}
+		else if ((this.mBoard[0][2] != STATE.EMPTY.value)
+				&& (this.mBoard[1][1] == this.mBoard[0][2])
+				&& (this.mBoard[2][0] == this.mBoard[0][2]))
+		{
+			this.mWinningLocation = WINNING_LOCATION.DIAGONAL_BOTTOMLEFT.value;
+			this.mGameResult = GAME_RESULT.O_WON.value;
+			if (this.mBoard[0][2] == STATE.CROSS.value)
+			{
+				this.mGameResult = GAME_RESULT.X_WON.value;
+			}
+		}
 
-  // Check whether the game was won or drawn
-  if ((this.mGameResult == GAME_RESULT.X_WON.value) ||
-      (this.mGameResult == GAME_RESULT.O_WON.value)) {
-    this.drawWinningLocation();
-    return true;
-  }
-  if (isBoardFull == true) {
-    this.mGameResult = GAME_RESULT.DRAW.value;
-    return true;
-  }
-  return false;
+		// Check whether the game was won or drawn
+		if ((this.mGameResult == GAME_RESULT.X_WON.value)
+				|| (this.mGameResult == GAME_RESULT.O_WON.value))
+		{
+			this.drawWinningLocation();
+			return true;
+		}
+		if (isBoardFull == true)
+		{
+			this.mGameResult = GAME_RESULT.DRAW.value;
+			return true;
+		}
+		return false;
 	}
 
 	private void drawWinningLocation()
 	{
 		boardDrawWinningLocation();
-		
+
 	}
 
+	/**
+	 * Draws the line connecting the winning three pieces.
+	 */
 	private void boardDrawWinningLocation()
 	{
-		 double xStart= -1, yStart= -1,xEnd= -1 , yEnd = -1;
-		  if (this.mWinningLocation == WINNING_LOCATION.ROW_0.value) {
-		    xStart = 0.05;
-		    xEnd = 2.95;
-		    yStart = yEnd = 0.5;
-		  } else if (this.mWinningLocation == WINNING_LOCATION.ROW_1.value) {
-		    xStart = 0.05;
-		    xEnd = 2.95;
-		    yStart = yEnd = 1.5;
-		  } else if (this.mWinningLocation == WINNING_LOCATION.ROW_2.value) {
-		    xStart = 0.05;
-		    xEnd = 2.95;
-		    yStart = yEnd = 2.5;
-		  } else if (this.mWinningLocation == WINNING_LOCATION.COLUMN_0.value) {
-		    yStart = 0.05;
-		    yEnd = 2.95;
-		    xStart = xEnd = 0.5;
-		  } else if (this.mWinningLocation == WINNING_LOCATION.COLUMN_1.value) {
-		    yStart = 0.05;
-		    yEnd = 2.95;
-		    xStart = xEnd = 1.5;
-		  } else if (this.mWinningLocation == WINNING_LOCATION.COLUMN_2.value) {
-		    yStart = 0.05;
-		    yEnd = 2.95;
-		    xStart = xEnd = 2.5;
-		  } else if (this.mWinningLocation == WINNING_LOCATION.DIAGONAL_TOPLEFT.value) {
-		    xStart = yStart = 0.05;
-		    xEnd = yEnd = 2.95;
-		  } else if (this.mWinningLocation == WINNING_LOCATION.DIAGONAL_BOTTOMLEFT.value) {
-		    xStart = yEnd = 2.95;
-		    yStart = xEnd = 0.05;
-		  } else {
-		    console.log("Unknown winning location: " + this.mWinningLocation);
-		  }
-		  this.mContext.setLineWidth(10);
-		  this.mContext.setStrokeStyle("#FF0000"); 
-		  this.mContext.beginPath();
-		  this.mContext.moveTo(this.X + this.cellWidth * xStart,
-		      this.Y + this.cellWidth * yStart);
-		  this.mContext.lineTo(this.X + this.cellWidth * xEnd,
-		      this.Y + this.cellWidth * yEnd);
-		  this.mContext.stroke();
-		
+		double xStart = -1, yStart = -1, xEnd = -1, yEnd = -1;
+		if (this.mWinningLocation == WINNING_LOCATION.ROW_0.value)
+		{
+			xStart = 0.05;
+			xEnd = 2.95;
+			yStart = yEnd = 0.5;
+		}
+		else if (this.mWinningLocation == WINNING_LOCATION.ROW_1.value)
+		{
+			xStart = 0.05;
+			xEnd = 2.95;
+			yStart = yEnd = 1.5;
+		}
+		else if (this.mWinningLocation == WINNING_LOCATION.ROW_2.value)
+		{
+			xStart = 0.05;
+			xEnd = 2.95;
+			yStart = yEnd = 2.5;
+		}
+		else if (this.mWinningLocation == WINNING_LOCATION.COLUMN_0.value)
+		{
+			yStart = 0.05;
+			yEnd = 2.95;
+			xStart = xEnd = 0.5;
+		}
+		else if (this.mWinningLocation == WINNING_LOCATION.COLUMN_1.value)
+		{
+			yStart = 0.05;
+			yEnd = 2.95;
+			xStart = xEnd = 1.5;
+		}
+		else if (this.mWinningLocation == WINNING_LOCATION.COLUMN_2.value)
+		{
+			yStart = 0.05;
+			yEnd = 2.95;
+			xStart = xEnd = 2.5;
+		}
+		else if (this.mWinningLocation == WINNING_LOCATION.DIAGONAL_TOPLEFT.value)
+		{
+			xStart = yStart = 0.05;
+			xEnd = yEnd = 2.95;
+		}
+		else if (this.mWinningLocation == WINNING_LOCATION.DIAGONAL_BOTTOMLEFT.value)
+		{
+			xStart = yEnd = 2.95;
+			yStart = xEnd = 0.05;
+		}
+		else
+		{
+			console.log("Unknown winning location: " + this.mWinningLocation);
+		}
+		this.mContext.setLineWidth(10);
+		this.mContext.setStrokeStyle("#FF0000");
+		this.mContext.beginPath();
+		this.mContext.moveTo(this.X + this.cellWidth * xStart, this.Y
+				+ this.cellWidth * yStart);
+		this.mContext.lineTo(this.X + this.cellWidth * xEnd, this.Y
+				+ this.cellWidth * yEnd);
+		this.mContext.stroke();
+
 	}
 
+	/**
+	 * Logs the current state of the board's pieces and results.
+	 */
 	private void printBoard()
 	{
 		boardPrintBoard();
-		
+
 	}
 
+	/**
+	 * Logs the current state of the board's pieces and results.
+	 */
 	private void boardPrintBoard()
 	{
-	  for (int i = 0; i < this.mBoard.length; i++) {
-	    console.log("[ " + this.mBoard[i][0] + ", " + this.mBoard[i][1] + ", " +
-	                this.mBoard[i][2] + " ]");
-	  }
-	  console.log("gameResult: " + this.mGameResult);
-	  console.log("winningLoc: " + this.mWinningLocation);
-		
+		for (int i = 0; i < this.mBoard.length; i++)
+		{
+			console.log("[ " + this.mBoard[i][0] + ", " + this.mBoard[i][1] + ", "
+					+ this.mBoard[i][2] + " ]");
+		}
+		console.log("gameResult: " + this.mGameResult);
+		console.log("winningLoc: " + this.mWinningLocation);
+
 	}
 
 	public int getWinningLocation()
@@ -320,27 +400,35 @@ public class Board
 
 	public String getGameResult()
 	{
-	  return this.mGameResult;
+		return this.mGameResult;
 	}
 
+	/**
+	 * Updates this game's result to abandoned.
+	 */
 	public void setGameAbandoned()
 	{
-	  this.mGameResult = GAME_RESULT.ABANDONED.value;
+		this.mGameResult = GAME_RESULT.ABANDONED.value;
 	}
 
+	/**
+	 * Resets the board to a starting state.
+	 */
 	public void reset()
 	{
-		 this.mGameResult = "";
-		  this.mWinningLocation = -1;
-		  this.mContext.beginPath();
-		  this.mContext.clearRect(this.X, this.Y, this.mContext.getCanvas().getWidth(),
-		      this.mContext.getCanvas().getHeight());
-		  this.drawGrid();
-		  for (int i = 0; i < this.mBoard.length; i++) {
-		    for (int j = 0; j < this.mBoard[0].length; j++) {
-		      this.mBoard[i][j] = STATE.EMPTY.value;
-		    }
-		  }
-		
+		this.mGameResult = "";
+		this.mWinningLocation = -1;
+		this.mContext.beginPath();
+		this.mContext.clearRect(this.X, this.Y, this.mContext.getCanvas()
+				.getWidth(), this.mContext.getCanvas().getHeight());
+		this.drawGrid();
+		for (int i = 0; i < this.mBoard.length; i++)
+		{
+			for (int j = 0; j < this.mBoard[0].length; j++)
+			{
+				this.mBoard[i][j] = STATE.EMPTY.value;
+			}
+		}
+
 	}
 }
