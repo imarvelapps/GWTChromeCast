@@ -5,7 +5,12 @@ import com.google.gwt.user.client.Event;
 
 public class MessageEvent extends Event
 {
-
+	/**
+	 * Event which contains message object. Parameters: {string} type Event Type.
+	 * {Object|string} message Parsed message object, or raw string message.
+	 * {goog.events.EventTarget=} opt_target Reference to the object that is the
+	 * target of this event.
+	 */
 	protected MessageEvent()
 	{
 	}
